@@ -5,6 +5,7 @@ const readline = require("readline");
 
 const codes = require("./codes.js");
 const countries = require("./countries.js");
+const getCurrency = require("./currency.js");
 
 let results = "";
 
@@ -21,9 +22,9 @@ function main() {
   } else {
     console.log("File `spotify_prices.csv` already exists!");
     console.log(
-      "If you want to proceed, the new data will be appended to the existing file."
+      "If you choose to proceed, the new data will be appended to the existing file."
     );
-    console.log("Do you want to proceed? (yes/no)");
+    console.log("What's it to be? (y/n)");
 
     rl.question("> ", (answer) => {
       answer = answer.toLowerCase();
@@ -93,7 +94,7 @@ async function scrapeEmAll(option) {
       break;
     }
     fs.appendFileSync("spotify_prices.csv", results);
-    console.log(`Results for ${countries[start]} to ${countries[end - 1]}.`);
+    console.log(`Saved results for ${countries[start]}-${countries[end - 1]}.`);
     await pause(10000);
   }
 
@@ -104,9 +105,8 @@ async function scrapeEmAll(option) {
 
 async function scrapeSection(browser, start, end) {
   console.log();
-  console.log(
-    `Scraping countries from ${countries[start]} to ${countries[end - 1]}`
-  );
+  console.log(`Scraping ${countries[start]}-${countries[end - 1]}...`);
+
   for (let i = start; i < end; i++) {
     const code = codes[i];
     const country = countries[i];
@@ -125,32 +125,18 @@ async function scrapeSection(browser, start, end) {
       url = `https://www.spotify.com/${code}/premium/`;
     }
 
-    let count = 0;
-    let result = await scrapeCountry(browser, country, url);
-    if (result === "error") {
-      if (count === 0) {
-        count++;
-        console.log(`Retrying ${country}...`);
-        await pause(30000);
-        result = await scrapeCountry(browser, country, url);
-        continue;
-      } else {
-        console.log("Retry failed. Calling it a day.");
+    let data = await scrapeCountry(browser, country, url);
+    if (data === "error") {
+      console.log(`Retrying ${country}...`);
+      await pause(30000);
+      data = await scrapeCountry(browser, country, url);
+      if (data === "error") {
         return 1;
       }
     }
-    if (result !== "not found") {
-      results += `${country},${result}\n`;
-      continue;
-    }
 
-    console.log(`${country} not found, trying with /${code}-en/..`);
-    url = `https://spotify.com/${code}-en/premium/`;
-    result = await scrapeCountry(browser, country, url);
-    results += `${country},${result}\n`;
-
-    if (result === "") {
-      console.log(`${country} not found even with /${code}-en/...`);
+    if (data) {
+      results += data + "\n";
     }
   }
 }
@@ -193,149 +179,13 @@ async function scrapeCountry(browser, country, url) {
         // If there are two digits after a comma or dot, it becomes a dot.
         let normalizedPrice = formatCommaOrDot(extractedPrice);
         console.log(`${country}: ${normalizedPrice} ${currency},\t"${text}"`);
-        return `"${normalizedPrice}",${currency},"${text}"`;
+        return `"${country}","${normalizedPrice}","${currency}","${text}"`;
       } else {
-        return `,,"${text}"`;
+        return;
       }
     }
   } catch (error) {
-    console.error(
-      `Error occurred while navigating to the page: ${error.message}`
-    );
+    console.error(`${error.message} while scraping ${url} (${country}).`);
     return "error";
-  }
-}
-
-function getCurrency(country, text) {
-  switch (country) {
-    case "Argentina":
-      return "ARS";
-
-    case "Australia":
-    case "Nauru":
-    case "Kiribati":
-    case "Tuvalu":
-      return "AUD";
-
-    case "Bangladesh":
-      return "BDT";
-
-    case "Belarus":
-    case "Georgia":
-    case "Kazakhstan":
-    case "Kuwait":
-    case "Kyrgistan":
-    case "Marshall Islands":
-    case "Moldova":
-    case "Oman":
-    case "Tajikistan":
-    case "United States":
-    case "Ukraine":
-    case "Uzbekistan":
-    case "Zambia":
-      return "USD";
-
-    case "Brazil":
-      return "BRL";
-    case "Bulgaria":
-      return "BGN";
-    case "Canada":
-      return "CAD";
-    case "Chile":
-      return "CLP";
-    case "Colombia":
-      return "COP";
-    case "Czech Republic":
-      return "CZK";
-    case "Denmark":
-      return "DKK";
-    case "Egypt":
-      return "EGP";
-    case "Ghana":
-      return "GHS";
-    case "Hong Kong":
-      return "HKD";
-    case "Hungary":
-      return "HUF";
-    case "Iraq":
-      return "IQD";
-    case "Israel":
-      return "ILS";
-    case "India":
-      return "INR";
-    case "Indonesia":
-      return "IDR";
-    case "Japan":
-      return "JPY";
-    case "Kenya":
-      return "KES";
-    case "Liechtenstein":
-      return "CHF";
-    case "Malaysia":
-      return "MYR";
-    case "Mexico":
-      return "MXN";
-    case "Morocco":
-      return "MAD";
-    case "New Zealand":
-      return "NZD";
-    case "Nigeria":
-      return "NGN";
-    case "Norway":
-      return "NOK";
-    case "Pakistan":
-      return "PKR";
-    case "Peru":
-      return "PEN";
-    case "Philippines":
-      return "PHP";
-    case "Poland":
-      return "PLN";
-    case "Qatar":
-      return "QAR";
-    case "Romania":
-      return "RON";
-    case "Saudi Arabia":
-      return "SAR";
-    case "Singapore":
-      return "SGD";
-    case "South Africa":
-      return "ZAR";
-    case "South Korea":
-      return "KRW";
-    case "Sri Lanka":
-      return "LKR";
-    case "Sweden":
-      return "SEK";
-    case "Switzerland":
-      return "CHF";
-    case "Taiwan":
-      return "TWD";
-    case "Tanzania":
-      return "TZS";
-    case "Thailand":
-      return "THB";
-    case "Tunisia":
-      return "TND";
-    case "Turkey":
-      return "TRY";
-    case "Uganda":
-      return "UGX";
-    case "United Arab Emirates":
-      return "AED";
-    case "United Kingdom":
-      return "GBP";
-    case "Vietnam":
-      return "VND";
-
-    default:
-      if (/US\$|\$US/.test(text)) {
-        return "USD";
-      } else if (/€/.test(text)) {
-        return "EUR";
-      } else if (/£/.test(text)) {
-        return "GBP";
-      }
-      return "";
   }
 }
