@@ -193,9 +193,9 @@ async function scrapeCountry(browser, country, url) {
         // If there are two digits after a comma or dot, it becomes a dot.
         let normalizedPrice = formatCommaOrDot(extractedPrice);
         console.log(`${country}: ${normalizedPrice} ${currency},\t"${text}"`);
-        return `${normalizedPrice},${currency},"${text}"`;
+        return `"${normalizedPrice}",${currency},"${text}"`;
       } else {
-        return `,,${text}`;
+        return `,,"${text}"`;
       }
     }
   } catch (error) {
