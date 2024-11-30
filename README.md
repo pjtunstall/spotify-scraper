@@ -4,7 +4,7 @@ A program for scraping Spotify premium individual plan price data for all countr
 
 At the moment, it saves the data in blocks of 25 countries, pausing for a few seconds in between in the hope that this will evade rate limiting better. If it times out while trying to get the data for a country, i.e. takes longer than 30s, then it waits for another 30s before trying one more time. This usually works.
 
-If you want to start afresh, delete or remove any existing `spotify_prices.cvs` file in this folder before running the script. The reason I haven't automated this yet is so that you can restart the program if it times out, commenting out the `sections` (blocks) that have already been completed. You may need to manually place add a new line between the previously completed section and the new ones. Eventually all of that can be automated.
+If you want to start afresh, delete or remove any existing `spotify_prices.cvs` file in this folder before running the script. The reason I haven't automated this yet is so that you can restart the program if it times out, commenting out the `section`s (blocks) that have already been completed. You may need to manually place add a new line between the previously completed section and the new ones. Eventually all of that can be automated.
 
 An alternative, shown below, would be to save each line as the data is fetched. This might be slower--I'm not sure by how much--but would make it convenient to just name the country you want to restart from if it didn't managed to get them all in one go. But this is significantly slower. A country that takes about 3s might take 6s. To try it, replace these two functions in the existing version.
 
