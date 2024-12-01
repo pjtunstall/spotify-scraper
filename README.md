@@ -1,12 +1,18 @@
 # Spotify Scraper
 
+## Overview
+
 A program for scraping Spotify premium individual plan price data for all countries.
+
+Preliminaries: you need to have [Node.js](https://nodejs.org/en/download) installed. This is an environment that will let you run JavaScript outside of a browser. To run, open a terminal and navigate to the folder that you want to download Spotify Scraper to. Clone this repo with `git clone https://github.com/pjtunstall/spotify-scraper`, navigate into the `spotify-scraper` folder, install the dependencies with `npm install`, then run `node scraper.js` and follow the prompts.
 
 At the moment, it saves the data in blocks of 25 countries, pausing for a few seconds in between in the hope that this will evade rate limiting better. If it times out while trying to get the data for a country, i.e. takes longer than 30s, then it waits for another 30s before trying one more time. This usually works.
 
-If you want to start afresh, delete or remove any existing `spotify_prices.cvs` file in this folder before running the script. The reason I haven't automated this yet is so that you can restart the program if it times out, commenting out the `section`s (blocks) that have already been completed. You may need to manually place add a new line between the previously completed section and the new ones. Eventually all of that can be automated.
+If anything goes wrong, e.g. the program crashes, or if you just need to stop the program for some reason, then you can run it again and choose which block of countries to start from when prompted. To stop the program, press Ctrl+C. Try it a few times if it's not responding.
 
-An alternative, shown below, would be to save each line as the data is fetched. This might be slower--I'm not sure by how much--but would make it convenient to just name the country you want to restart from if it didn't managed to get them all in one go. But this is significantly slower. A country that takes about 3s might take 6s. To try it, replace these two functions in the existing version.
+If you want to start afresh, delete or remove any existing `spotify_prices.cvs` file in this folder before running the script.
+
+An alternative, shown below, would be to save each line as the data is fetched. This would make it convenient to just name the individual country you want to restart from if it didn't managed to get them all in one go. But it is significantly slower. A country that takes about 3s might take 6s. To try it, replace these two functions in the existing version.
 
 ```javascript
 async function scrapeSpotifyPrice(browser, country, url) {
@@ -103,3 +109,29 @@ async function scrapeEmAll() {
   }
 }
 ```
+
+## Further
+
+### Extend to other streaming services
+
+See how they present price data and how the program could be generalized. At present, many individual quirks of Spotify are dealt with as special cases, but some of could be parametrized; e.g. if every provider has its own list of which countries use USD, those lists could be imported and applied at the relevant place.
+
+### Error report
+
+A log file could be saved with a more detailed error report, showing whether a country was successfully scraped and, if not, whether the page was not found, or the price or currency not parsed.
+
+### Trim list of countries
+
+If some countries are never needed, they could be removed from the list to speed up the search.
+
+### Compiled language
+
+The program could be rewritten in a compiled language, such as Go or Rust, for better performance (speed) and for the convenience of being able to share it by just sharing an executable file. (Python on an interpreted language, like JavaScript, so it needs a runtime environment too.)
+
+Go is generally faster that JavaScript and Python, and Rust fastest of all.
+
+### Concurrency
+
+At the risk of being rate-limited, the program could scrape blocks at the same time as each other, save each in a separate file as it's completed, then combine the files at the end. If the process is aborted, the next attempt could be restricted to just the remaining blocks. If done right, this should give some improvement in speed, unless network delays are the main limiting factor.
+
+This can be done in JavaScript, Go, or Rust, but is simplest in Go.
