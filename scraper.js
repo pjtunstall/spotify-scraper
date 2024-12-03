@@ -161,6 +161,16 @@ async function scrapeCountry(browser, country, url) {
   const page = await browser.newPage();
 
   try {
+    await page.setRequestInterception(true);
+
+    page.on("request", (req) => {
+      if (["stylesheet", "image", "font"].includes(req.resourceType())) {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+
     const response = await page.goto(url, { waitUntil: "domcontentloaded" });
 
     if (!response.ok()) {
