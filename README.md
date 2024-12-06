@@ -124,9 +124,17 @@ A log file could be saved with a more detailed error report, showing whether a c
 
 If some countries are never needed, they could be removed from the list to speed up the search.
 
+### Store country names and codes together
+
+... in one object to make it easier to catch discrepancies.
+
+### Add tests
+
+Unit tests, some basic reality checks, etc., especially before making any modifications.
+
 ### Compiled language
 
-The program could be rewritten in a compiled language, such as Go or Rust, for better performance (speed) and for the convenience of being able to share it by just sharing an executable file. (Python on an interpreted language, like JavaScript, so it needs a runtime environment too.)
+The program could be rewritten in a compiled language, such as Go or Rust, for better performance (speed) and for the convenience of being able to share it by just sharing an executable file. (Python is an interpreted language, like JavaScript, so it needs a runtime environment too.)
 
 Go is generally faster that JavaScript and Python, and Rust fastest of all.
 
