@@ -12,7 +12,7 @@ If anything goes wrong, e.g. the program crashes, or if you just need to stop th
 
 If you want to start afresh, delete or remove any existing `spotify_prices.cvs` file in this folder before running the script.
 
-An alternative, shown below, would be to save each line as the data is fetched. This would make it convenient to just name the individual country you want to restart from if it didn't managed to get them all in one go. But it is significantly slower. A country that takes about 3s might take 6s. To try it, replace these two functions in the existing version.
+An alternative, shown below, would be to save each line as the data is fetched. This would make it convenient to just name the individual country you want to restart from if it didn't managed to get them all in one go as the cost of some delay due to having to open and close the file for each country instead of batching the writes.
 
 ```javascript
 async function scrapeSpotifyPrice(browser, country, url) {
@@ -96,9 +96,6 @@ async function scrapeEmAll() {
         url = `https://spotify.com/${code}-en/premium/`;
         await scrapeSpotifyPrice(browser, country, url);
       }
-
-      // Small pause between countries to avoid overwhelming the server
-      await pause(2000);
     }
   } catch (error) {
     console.error("An error occurred during scraping:", error);
@@ -147,3 +144,7 @@ This can be done in JavaScript, Go, or Rust.
 ### Mitigation of rate-limiting
 
 At present, the program has a 10s pause between blocks of coutries, and a 30s pause in case of any error while scraping the data for a country. We could experiment with different delays between blocks. Instead of treating all errors the same, it could respond to HTTP 429 (too-many requests) errors by waiting, and trying again after a delay.
+
+### Benchmarking
+
+Essential to any performance-related experimentation.
