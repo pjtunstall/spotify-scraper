@@ -148,3 +148,25 @@ At present, the program has a 10s pause between blocks of coutries, and a 30s pa
 ### Benchmarking
 
 Essential to any performance-related experimentation.
+
+### Respect the Robots
+
+Whether repeating with Spotify or extending to other sites, continue to respect the guidelines for scraping, as laid out in the robots.txt. In [Spotify](https://www.spotify.com/robots.txt)'s case:
+
+```
+Disallow: /*/about-us/contact/contact-spotify-password/
+Disallow: /*/about-us/contact/contact-spotify-account/
+Disallow: /*/get-spotify/*
+Disallow: /*/xhr/*
+Disallow: /*/external/*
+Disallow: /*/legal/*?ets=
+Disallow: /*/legal/advertiser-terms-and-conditions/
+Disallow: /*/legal/gdpr-article-15-information/
+Disallow: /*/legal/spotify-controller-data-processing-terms/
+Disallow: /*/account/cls/*
+Disallow: /*/starbuckspartners
+Disallow: /starbuckspartners
+Disallow: /ppt/*?
+Disallow: /partner/*?
+Sitemap: https://www.spotify.com/sitemap.xml
+```
