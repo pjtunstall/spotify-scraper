@@ -140,6 +140,10 @@ Go is generally faster that JavaScript and Python, and Rust fastest of all.
 
 ### Concurrency
 
-At the risk of being rate-limited, the program could scrape blocks at the same time as each other, save each in a separate file as it's completed, then combine the files at the end. If the process is aborted, the next attempt could be restricted to just the remaining blocks. If done right, this should give some improvement in speed, unless network delays are the main limiting factor.
+At the risk of being rate-limited, the program could scrape multiple blocks of countries at the same time as each other, save each in a separate file as it's completed, then combine the files at the end. If the process is aborted, the next attempt could be restricted to just the remaining blocks. If done right, this should give some improvement in speed, unless network delays are the main limiting factor.
 
-This can be done in JavaScript, Go, or Rust, but is simplest in Go.
+This can be done in JavaScript, Go, or Rust.
+
+### Mitigation of rate-limiting
+
+At present, the program has a 10s pause between blocks of coutries, and a 30s pause in case of error. We could experiment with different delays between blocks. Instead of treating all errors the same, it could respond to HTTP 429 (too-many request) errors by waiting, and trying again after a delay.
