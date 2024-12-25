@@ -146,4 +146,4 @@ This can be done in JavaScript, Go, or Rust.
 
 ### Mitigation of rate-limiting
 
-At present, the program has a 10s pause between blocks of coutries, and a 30s pause in case of error. We could experiment with different delays between blocks. Instead of treating all errors the same, it could respond to HTTP 429 (too-many request) errors by waiting, and trying again after a delay.
+At present, the program has a 10s pause between blocks of coutries, and a 30s pause in case of any error while scraping the data for a country. We could experiment with different delays between blocks. Instead of treating all errors the same, it could respond to HTTP 429 (too-many requests) errors by waiting, and trying again after a delay.
