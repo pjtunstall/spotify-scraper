@@ -1,4 +1,4 @@
-const codes = [
+export const codes = [
   "af",
   "ax",
   "al",
@@ -245,5 +245,3 @@ const codes = [
   "zm",
   "zw",
 ];
-
-module.exports = codes;

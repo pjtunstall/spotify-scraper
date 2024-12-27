@@ -1,4 +1,4 @@
-const countries = [
+export const countries = [
   "Afghanistan",
   "Aland Islands",
   "Albania",
@@ -245,5 +245,3 @@ const countries = [
   "Zambia",
   "Zimbabwe",
 ];
-
-module.exports = countries;

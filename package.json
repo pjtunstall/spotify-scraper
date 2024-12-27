@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "type": "module",
   "dependencies": {
     "cheerio": "^1.0.0",
     "he": "^1.2.0",
+    "p-limit": "^6.2.0",
     "puppeteer": "^23.9.0"
   }
 }
