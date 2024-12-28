@@ -11,10 +11,10 @@ function main() {
     output: process.stdout,
   });
 
-  if (!fs.existsSync("spotify_prices.csv")) {
+  if (!fs.existsSync("spotify-prices.csv")) {
     menu(rl);
   } else {
-    console.log("File `spotify_prices.csv` already exists!");
+    console.log("File `spotify-prices.csv` already exists!");
     console.log(
       "If you choose to proceed, the new data will be appended to the existing file."
     );

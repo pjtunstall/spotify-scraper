@@ -1,8 +1,8 @@
 import fs from "fs";
 import puppeteer from "puppeteer";
-import codes from "./codes.js";
-import countries from "./countries.js";
-import scrapeSection from "./scrape/scrape-section.js";
+import codes from "../../data/codes.js";
+import countries from "../../data/countries.js";
+import scrapeSection from "./scrape-section.js";
 
 export default async function scrape(option) {
   const browser = await puppeteer.launch();
@@ -32,7 +32,8 @@ export default async function scrape(option) {
       break;
     }
 
-    fs.appendFileSync("spotify_prices.csv", results);
+    const filePath = path.resolve(__dirname, "../spotify-prices.csv"); // Relative to `main.js`.
+    fs.appendFileSync(filePath, results);
     console.log(`Saved results for ${countries[start]}-${countries[end - 1]}.`);
 
     failedCountries.push(...failedCountriesThisSection);

@@ -8,15 +8,17 @@ A program for scraping Spotify premium individual plan price data for all countr
 
 ### Usage
 
-Preliminaries: you need to have [Node.js](https://nodejs.org/en/download) installed. This is an environment that will let you run JavaScript outside of a browser. To run, open a terminal and navigate to the folder that you want to download Spotify Scraper to. Clone this repo with `git clone https://github.com/pjtunstall/spotify-scraper`, navigate into the `spotify-scraper` folder, install the dependencies with `npm install`, then run `node scraper.js` and follow the prompts.
+Preliminaries: you need to have [Node.js](https://nodejs.org/en/download) installed. This is an environment that will let you run JavaScript outside of a browser. To run, open a terminal and navigate to the folder that you want to download Spotify Scraper to. Clone this repo with `git clone https://github.com/pjtunstall/spotify-scraper`, navigate into the `spotify-scraper` folder, install the dependencies with `npm install`, then run `node src/main.js` and follow the prompts.
 
-At the moment, it saves the data in blocks of 25 countries.
+At the moment, it saves the data in blocks of 25 countries. The resulting file is called `spotify-prices.csv` and can be found in this folder (`spotify-scraper`), the root directory of the project.
 
 If anything goes wrong, you can run the program again and choose which block of countries to start from when prompted. To stop the program, press Ctrl+C. Try Ctrl+C a few times if it's not responding.
 
-If you want to start afresh, delete or remove any existing `spotify_prices.cvs` file in this folder before running the script.
+If you want to start afresh, delete or remove any existing `spotify-prices.cvs` file before running the script.
 
-### Code structure (call graph)
+### Code structure
+
+Internal call graph:
 
 ```
 main
@@ -25,8 +27,29 @@ main
             scrapeSection
                 └── scrapeWithRetry
                         ├── scrapeCountry
+                        |       ├── getCurrency
                         |       └── formatCommaOrDot
                         └── pause
+```
+
+Folders:
+
+```
+spotify-scraper
+├── data
+│   ├── codes.js
+│   └── countries.js
+└── src
+    ├── main.js
+    ├── menu.js
+    └──scrape
+        ├── format-comma-or-dot.js
+        ├── get-currency.js
+        ├── pause.js
+        ├── scrape-country.js
+        ├── scrape-section.js
+        ├── scrape-with-retry.js
+        └── scrape.js
 ```
 
 ## Further
@@ -78,19 +101,25 @@ Benchmark before and after any performance-related experiment.
 Whether repeating with Spotify or extending to other sites, continue to scrape ethically and respect the guidelines as laid out in the robots.txt. In [Spotify](https://www.spotify.com/robots.txt)'s case:
 
 ```
-Disallow: /*/about-us/contact/contact-spotify-password/
-Disallow: /*/about-us/contact/contact-spotify-account/
-Disallow: /*/get-spotify/*
-Disallow: /*/xhr/*
-Disallow: /*/external/*
-Disallow: /*/legal/*?ets=
-Disallow: /*/legal/advertiser-terms-and-conditions/
-Disallow: /*/legal/gdpr-article-15-information/
-Disallow: /*/legal/spotify-controller-data-processing-terms/
-Disallow: /*/account/cls/*
-Disallow: /*/starbuckspartners
+
+Disallow: /_/about-us/contact/contact-spotify-password/
+Disallow: /_/about-us/contact/contact-spotify-account/
+Disallow: /_/get-spotify/_
+Disallow: /_/xhr/_
+Disallow: /_/external/_
+Disallow: /_/legal/_?ets=
+Disallow: /_/legal/advertiser-terms-and-conditions/
+Disallow: /_/legal/gdpr-article-15-information/
+Disallow: /_/legal/spotify-controller-data-processing-terms/
+Disallow: /_/account/cls/_
+Disallow: /_/starbuckspartners
 Disallow: /starbuckspartners
-Disallow: /ppt/*?
-Disallow: /partner/*?
+Disallow: /ppt/_?
+Disallow: /partner/_?
 Sitemap: https://www.spotify.com/sitemap.xml
+
+```
+
+```
+
 ```

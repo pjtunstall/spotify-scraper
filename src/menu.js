@@ -1,5 +1,5 @@
-import countries from "./countries.js";
-import scrape from "./scrape.js";
+import countries from "../data/countries.js";
+import scrape from "./scrape/scrape.js";
 
 export function menu(rl) {
   console.log("Which country do you want to start from?");

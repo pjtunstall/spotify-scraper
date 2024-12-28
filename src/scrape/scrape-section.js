@@ -1,6 +1,6 @@
 import pLimit from "p-limit";
-import codes from "../codes.js";
-import countries from "../countries.js";
+import codes from "../../data/codes.js";
+import countries from "../../data/countries.js";
 import scrapeWithRetry from "./scrape-with-retry.js";
 
 export default async function scrapeSection(browser, start, end) {

@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
-import getCurrency from "../currency.js";
-import formatCommaOrDot from "./format.js";
+import getCurrency from "./get-currency.js";
+import formatCommaOrDot from "./format-comma-or-dot.js";
 
 export default async function scrapeCountry(browser, country, url) {
   const page = await browser.newPage();
