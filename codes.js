@@ -1,4 +1,4 @@
-export const codes = [
+export default [
   "af",
   "ax",
   "al",

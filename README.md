@@ -46,7 +46,7 @@ That said, the main limiting factor seems to be the network and how many request
 
 ### Concurrency
 
-The variable `pLimit` determines the number of concurrent (simultaneous) requests being made to the website. Low values seem to do best. A response of HTTP 429 (too-many requests) indicates that we're being rate-limited. It's not clear to me whether concurrency gains us any speed overall. As `pLimit` is raised, such errors proliferate.
+The variable `pLimit` in `scrapeSection` (in `scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. Low values seem to do best, e.g. 1-3. A response of HTTP 429 (too-many requests) indicates that we're being rate-limited. It's not clear to me whether concurrency gains us any speed overall. As `pLimit` is raised, such errors proliferate.
 
 ### Benchmarking
 
@@ -54,7 +54,7 @@ Benchmark before and after any performance-related experiment.
 
 ### Respect the Robots
 
-Whether repeating with Spotify or extending to other sites, continue to respect the guidelines for scraping, as laid out in the robots.txt. In [Spotify](https://www.spotify.com/robots.txt)'s case:
+Whether repeating with Spotify or extending to other sites, continue to scrape ethically and respect the guidelines as laid out in the robots.txt. In [Spotify](https://www.spotify.com/robots.txt)'s case:
 
 ```
 Disallow: /*/about-us/contact/contact-spotify-password/

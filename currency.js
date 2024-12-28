@@ -1,4 +1,4 @@
-export function getCurrency(country, text) {
+export default function getCurrency(country, text) {
   switch (country) {
     case "Argentina":
       return "ARS";
