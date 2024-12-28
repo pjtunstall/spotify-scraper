@@ -24,7 +24,7 @@ A program for scraping Spotify premium individual plan price data for all countr
 
 ## Usage
 
-Preliminaries: you need to have [Node.js](https://nodejs.org/en/download) installed. This is an environment that will let you run JavaScript outside of a browser. To start the program, follow these steps: open a terminal and navigate into the folder where you want to download the project using `cd` (e.g. `cd Desktop/spotify-scraper`). Download it with the command
+Make sure you have [Node.js](https://nodejs.org/en/download) installed. Then follow these steps: open a terminal and navigate into the folder where you want to download the project using `cd` (e.g. `cd Desktop/spotify-scraper`). Download it with the command
 
 ```
 git clone https://github.com/pjtunstall/spotify-scraper
@@ -84,11 +84,19 @@ They're currently set to `pLimit = 2` and `retries = 5`.
 
 ## Further
 
-### Extend to other streaming services
+### Make more robust
 
-See how they present price data and how the program could be generalized. At present, many individual quirks of Spotify are dealt with as special cases, but some of could be parametrized; e.g. if every provider has its own list of which countries use USD, those lists could be imported and applied at the relevant place.
+In particular, there are sometimes long pauses together with heavy CPU use. Sometimes the program has to be stopped. In the worst cases, my computer crashes. Would a timeout mechanism help? I doubt the solution is that simple, given that it can happen with only a handful of concurrent attempts in progress, but still something might be learnt from trying. the problem was happening before I introduced `pLimit` (which relies on the `p-limit` library), but it could still help to look at what this actually does under the hood. Maybe something could be learnt from writing my own asynchronous request queue or adapting the asynchronous iterator example from David Flanagan's `JavaScript: The Definitive Guide`, 13.4.4.
 
-Of course, if a company provided an API to access the data directly, this would simplify things.
+### Tests
+
+Write tests, including some basic reality checks, especially before making any modifications.
+
+### Better error handling
+
+Switch to TypeScript to spot bugs sooner.
+
+Make error handling more thorough and more consistent: use try/catch throughout instead of sometimes returning the string "error". Log `error.stack` to print a stack trace by default for all errors except known, acceptable possibilities such as a HTTP response of 429 (too many requests). Consider whether to log in place and/or on catching an error. Perhaps write a panic function to exit with a stack trace unless there's a good reason not to. Add asserts.
 
 ### Error report
 
@@ -102,21 +110,21 @@ If some countries are never needed, they could be removed from the list to speed
 
 Store them in one object to make it easier to catch discrepancies.
 
-### Tests
-
-Unit tests, some basic reality checks, etc., especially before making any modifications.
-
 ### Compiled language
 
-The program could be rewritten in a compiled language, such as Go or Rust, for better performance (speed) and for the convenience of being able to share it by just sharing an executable file. (Python is an interpreted language, like JavaScript, so it needs a runtime environment too.)
+The program could be rewritten in Go or Rust, for the better performance, type-safety, thread-safety, error handling, and for the convenience of being able to share it by just sharing an executable file.
 
-Go is generally faster that JavaScript and Python, and Rust fastest of all.
-
-That said, the main limiting factor seems to be the network and how many requests Spotify's own server is able and willing to process per unit of time.
+That said, regarding performance, the main limiting factor seems to be the network and how many requests Spotify's own server is able and willing to process per unit of time.
 
 ### Benchmarking
 
 Benchmark before and after any performance-related experiment.
+
+### Extend to other streaming services
+
+See how they present price data and how the program could be generalized. At present, many individual quirks of Spotify are dealt with as special cases, but some of could be parametrized; e.g. if every provider has its own list of which countries use USD, those lists could be imported and applied at the relevant place.
+
+Of course, if a company provided an API to access the data directly, this would simplify things.
 
 ### Respect the Robots
 
