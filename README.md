@@ -1,24 +1,46 @@
 # Spotify Scraper
 
-## Overview
+## Contents
 
-### What is it?
+- [What is it?](#what-is-it?)
+- [Usage](#usage)
+- [Structure](#structure)
+  - [Internal call graph](#internal-call-graph)
+  - [File structure](#file-structure)
+- [A note on concurency](#a-note-on-concurrency)
+- [Further](#further)
+  - [Extend to other streaming services](#extend-to-other-streaming-services)
+  - [Error report](#error-report)
+  - [Trim list of countries](#trim-list-of-countries)
+  - [Store country names and codes together](#store-country-names-and-codes-together)
+  - [Tests](#tests)
+  - [Compiled language](#compiled-language)
+  - [Benchmarking](#benchmarking)
+  - [Respect the Robots](#respect-the-robots)
+
+## What is it?
 
 A program for scraping Spotify premium individual plan price data for all countries.
 
-### Usage
+## Usage
 
-Preliminaries: you need to have [Node.js](https://nodejs.org/en/download) installed. This is an environment that will let you run JavaScript outside of a browser. To run, open a terminal and navigate to the folder that you want to download Spotify Scraper to. Clone this repo with `git clone https://github.com/pjtunstall/spotify-scraper`, navigate into the `spotify-scraper` folder, install the dependencies with `npm install`, then run `node src/main.js` and follow the prompts.
+Preliminaries: you need to have [Node.js](https://nodejs.org/en/download) installed. This is an environment that will let you run JavaScript outside of a browser. To start the program, follow these steps: open a terminal and navigate into the folder where you want to download the project using `cd` (e.g. `cd Desktop/spotify-scraper`). Download it with the command
+
+```
+git clone https://github.com/pjtunstall/spotify-scraper
+```
+
+Now navigate into the `spotify-scraper` folder with `cd spotify-scraper`, install 3rd-party dependencies with `npm install`, run the program with `node src/main.js`, and follow the prompts.
 
 At the moment, it saves the data in blocks of 25 countries. The resulting file is called `spotify-prices.csv` and can be found in this folder (`spotify-scraper`), the root directory of the project.
 
-If anything goes wrong, you can run the program again and choose which block of countries to start from when prompted. To stop the program, press Ctrl+C. Try Ctrl+C a few times if it's not responding.
+If anything goes wrong (such as extreme delays), you can run the program again and choose which block of countries to start from when prompted. To stop the program, press Ctrl+C. Try Ctrl+C a few times if it's not responding.
 
 If you want to start afresh, delete or remove any existing `spotify-prices.cvs` file before running the script.
 
-### Code structure
+## Structure
 
-Internal call graph:
+### Internal call graph
 
 ```
 main
@@ -32,7 +54,7 @@ main
                         └── pause
 ```
 
-Folders:
+### File structure
 
 ```
 spotify-scraper
@@ -51,6 +73,14 @@ spotify-scraper
         ├── scrape-with-retry.js
         └── scrape.js
 ```
+
+## A note on concurrency
+
+The variable `pLimit` in the function `scrapeSection` (in `src/scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. Low values seem to do best, e.g. 1-3. A response of HTTP 429 (too-many requests) indicates that we're being rate-limited. It's not clear to me whether concurrency offers any gain in speed overall. As `pLimit` is raised, such errors proliferate.
+
+The number of retries per country is determined by the variable `retries` in the function `scrapeWithRetry` (in `src/scrape/scrape-with-retry.js`). This can be adjusted together with `pLimit`.
+
+They're currently set to `pLimit = 2` and `retries = 5`.
 
 ## Further
 
@@ -72,7 +102,7 @@ If some countries are never needed, they could be removed from the list to speed
 
 Store them in one object to make it easier to catch discrepancies.
 
-### Add tests
+### Tests
 
 Unit tests, some basic reality checks, etc., especially before making any modifications.
 
@@ -84,14 +114,6 @@ Go is generally faster that JavaScript and Python, and Rust fastest of all.
 
 That said, the main limiting factor seems to be the network and how many requests Spotify's own server is able and willing to process per unit of time.
 
-### Concurrency
-
-The variable `pLimit` in the function `scrapeSection` (in `scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. Low values seem to do best, e.g. 1-3. A response of HTTP 429 (too-many requests) indicates that we're being rate-limited. It's not clear to me whether concurrency offers any gain in speed overall. As `pLimit` is raised, such errors proliferate.
-
-The number of retries per country is determined by the variable `retries` in the function `scrapeWithRetry` (in `scrape/scrape-with-retry.js`). This can be adjusted together with `pLimit`.
-
-They're currently set to `pLimit = 2` and `retries = 5`.
-
 ### Benchmarking
 
 Benchmark before and after any performance-related experiment.
@@ -101,7 +123,7 @@ Benchmark before and after any performance-related experiment.
 Whether repeating with Spotify or extending to other sites, continue to scrape ethically and respect the guidelines as laid out in the robots.txt. In [Spotify](https://www.spotify.com/robots.txt)'s case:
 
 ```
-
+User-agent: *
 Disallow: /_/about-us/contact/contact-spotify-password/
 Disallow: /_/about-us/contact/contact-spotify-account/
 Disallow: /_/get-spotify/_
@@ -117,9 +139,4 @@ Disallow: /starbuckspartners
 Disallow: /ppt/_?
 Disallow: /partner/_?
 Sitemap: https://www.spotify.com/sitemap.xml
-
-```
-
-```
-
 ```
