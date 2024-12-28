@@ -18,7 +18,7 @@ export function menu(rl) {
   );
 
   rl.question("> ", (input) => {
-    let option = Number(input.trim());
+    const option = Number(input.trim());
     if (isNaN(option) || option < 0 || option > 8) {
       console.log("Invalid input. Please enter a number between 0 and 8.");
       menu(rl);

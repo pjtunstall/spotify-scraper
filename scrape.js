@@ -5,10 +5,9 @@ import countries from "./countries.js";
 import scrapeSection from "./scrape/scrape-section.js";
 
 export default async function scrape(option) {
-  let browser = await puppeteer.launch();
-  let results = "";
-
-  let sections = [
+  const browser = await puppeteer.launch();
+  const failedCountries = [];
+  const sections = [
     [0, 25],
     [25, 50],
     [50, 75],
@@ -20,31 +19,34 @@ export default async function scrape(option) {
     [200, codes.length],
   ];
 
-  let failedCountries = [];
-
   for (let i = option; i < sections.length; i++) {
-    results = "";
-    let [start, end] = sections[i];
+    const [start, end] = sections[i];
 
-    const { combinedResults, failedCountries: failed } = await scrapeSection(
+    const { results, failedCountriesThisSection } = await scrapeSection(
       browser,
       start,
       end
     );
 
-    if (combinedResults === null) {
+    if (results === null) {
       break;
     }
 
-    results += combinedResults;
     fs.appendFileSync("spotify_prices.csv", results);
     console.log(`Saved results for ${countries[start]}-${countries[end - 1]}.`);
 
-    failedCountries.push(...failed);
+    failedCountries.push(...failedCountriesThisSection);
 
     if (failedCountries.length === 0) {
       console.log("All countries successfully scraped.");
     }
+  }
+
+  if (failedCountries.length != 0) {
+    console.log(
+      "Altogether, these countries failed after all retries and won't be retried:"
+    );
+    console.log(failedCountries.join(", "));
   }
 
   console.log("Waiting for browser to close...");

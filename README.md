@@ -2,7 +2,11 @@
 
 ## Overview
 
+### What is it?
+
 A program for scraping Spotify premium individual plan price data for all countries.
+
+### Usage
 
 Preliminaries: you need to have [Node.js](https://nodejs.org/en/download) installed. This is an environment that will let you run JavaScript outside of a browser. To run, open a terminal and navigate to the folder that you want to download Spotify Scraper to. Clone this repo with `git clone https://github.com/pjtunstall/spotify-scraper`, navigate into the `spotify-scraper` folder, install the dependencies with `npm install`, then run `node scraper.js` and follow the prompts.
 
@@ -11,6 +15,19 @@ At the moment, it saves the data in blocks of 25 countries.
 If anything goes wrong, you can run the program again and choose which block of countries to start from when prompted. To stop the program, press Ctrl+C. Try Ctrl+C a few times if it's not responding.
 
 If you want to start afresh, delete or remove any existing `spotify_prices.cvs` file in this folder before running the script.
+
+### Code structure (call graph)
+
+```
+main
+└── menu
+    └── scrape
+            scrapeSection
+                └── scrapeWithRetry
+                        ├── scrapeCountry
+                        |       └── formatCommaOrDot
+                        └── pause
+```
 
 ## Further
 
@@ -46,7 +63,11 @@ That said, the main limiting factor seems to be the network and how many request
 
 ### Concurrency
 
-The variable `pLimit` in `scrapeSection` (in `scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. Low values seem to do best, e.g. 1-3. A response of HTTP 429 (too-many requests) indicates that we're being rate-limited. It's not clear to me whether concurrency gains us any speed overall. As `pLimit` is raised, such errors proliferate.
+The variable `pLimit` in the function `scrapeSection` (in `scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. Low values seem to do best, e.g. 1-3. A response of HTTP 429 (too-many requests) indicates that we're being rate-limited. It's not clear to me whether concurrency offers any gain in speed overall. As `pLimit` is raised, such errors proliferate.
+
+The number of retries per country is determined by the variable `retries` in the function `scrapeWithRetry` (in `scrape/scrape-with-retry.js`). This can be adjusted together with `pLimit`.
+
+They're currently set to `pLimit = 2` and `retries = 5`.
 
 ### Benchmarking
 

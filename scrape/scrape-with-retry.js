@@ -7,7 +7,7 @@ export default async function scrapeWithRetry(
   url,
   failedCountries
 ) {
-  let retries = 5;
+  const retries = 5;
   let data = "error";
 
   for (let i = 0; i < retries; i++) {

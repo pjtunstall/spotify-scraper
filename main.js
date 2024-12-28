@@ -6,7 +6,7 @@ import { menu } from "./menu.js";
 main();
 
 function main() {
-  let rl = readline.createInterface({
+  const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
   });

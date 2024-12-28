@@ -7,9 +7,9 @@ export default async function scrapeSection(browser, start, end) {
   console.log();
   console.log(`Scraping ${countries[start]}-${countries[end - 1]}...`);
 
-  let limit = pLimit(2); // Limit to 2 concurrent requests.
-  let promises = [];
-  let failedCountries = [];
+  const limit = pLimit(2); // Limit to 2 concurrent requests.
+  const promises = [];
+  const failedCountriesThisSection = [];
 
   for (let i = start; i < end; i++) {
     const code = codes[i];
@@ -20,17 +20,19 @@ export default async function scrapeSection(browser, start, end) {
       : `https://www.spotify.com/${code}/premium/`;
 
     promises.push(
-      limit(() => scrapeWithRetry(browser, country, url, failedCountries))
+      limit(() =>
+        scrapeWithRetry(browser, country, url, failedCountriesThisSection)
+      )
     );
   }
 
   try {
-    let resultsArray = await Promise.allSettled(promises);
+    const resultsArray = await Promise.allSettled(promises);
 
-    let combinedResults = "";
+    let results = "";
     resultsArray.forEach(({ status, value, reason }) => {
       if (status === "fulfilled" && value.data) {
-        combinedResults += value.data + "\n";
+        results += value.data + "\n";
       }
       if (status === "rejected") {
         console.error(`Error processing: ${reason.message}`);
@@ -41,17 +43,17 @@ export default async function scrapeSection(browser, start, end) {
       `Completed scraping ${countries[start]}-${countries[end - 1]}.`
     );
 
-    if (failedCountries.length > 0) {
+    if (failedCountriesThisSection.length > 0) {
       console.log(
         "These countries failed after all retries and won't be retried:"
       );
-      console.log(failedCountries.join(", "));
+      console.log(failedCountriesThisSection.join(", "));
     }
 
-    return { combinedResults, failedCountries };
+    return { results, failedCountriesThisSection };
   } catch (error) {
     console.error(`Scraping failed unexpectedly: ${error.message}`);
-    return { combinedResults: null, failedCountries };
+    return { results: null, failedCountriesThisSection };
   }
 }
 

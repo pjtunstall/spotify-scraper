@@ -4,7 +4,7 @@ import getCurrency from "../currency.js";
 import formatCommaOrDot from "./format.js";
 
 export default async function scrapeCountry(browser, country, url) {
-  let page = await browser.newPage();
+  const page = await browser.newPage();
 
   try {
     await page.setRequestInterception(true);
@@ -16,7 +16,7 @@ export default async function scrapeCountry(browser, country, url) {
       }
     });
 
-    let response = await page.goto(url, { waitUntil: "domcontentloaded" });
+    const response = await page.goto(url, { waitUntil: "domcontentloaded" });
 
     if (!response.ok()) {
       console.error(
@@ -25,13 +25,13 @@ export default async function scrapeCountry(browser, country, url) {
       return "error";
     }
 
-    let content = await page.content();
-    let $ = cheerio.load(content);
+    const content = await page.content();
+    const $ = cheerio.load(content);
 
-    let text = $("#plan-premium-individual .sc-71cce616-6").text().trim();
-    let priceNumber = text.match(/(\d+(?:[.,]\d+)*)/);
-    let extractedPrice = priceNumber ? priceNumber[1] : null;
-    let currency = getCurrency(country, text);
+    const text = $("#plan-premium-individual .sc-71cce616-6").text().trim();
+    const priceNumber = text.match(/(\d+(?:[.,]\d+)*)/);
+    const extractedPrice = priceNumber ? priceNumber[1] : null;
+    const currency = getCurrency(country, text);
 
     if (extractedPrice) {
       let normalizedPrice = formatCommaOrDot(extractedPrice);
