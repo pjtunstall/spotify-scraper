@@ -57,14 +57,14 @@ main
 ### File structure
 
 ```
-spotify-scraper
-├── data
+spotify-scraper/
+├── data/
 │   ├── codes.js
 │   └── countries.js
-└── src
+└── src/
     ├── main.js
     ├── menu.js
-    └──scrape
+    └──scrape/
         ├── format-comma-or-dot.js
         ├── get-currency.js
         ├── pause.js
