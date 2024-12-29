@@ -1,18 +1,13 @@
 import pause from "./pause.js";
 import scrapeCountry from "./scrape-country.js";
 
-export default async function scrapeWithRetry(
-  browser,
-  country,
-  url,
-  failedCountries
-) {
+export default async function scrapeWithRetry(country, url, failedCountries) {
   const retries = 5;
   let data = "error";
 
   for (let i = 0; i < retries; i++) {
     try {
-      data = await scrapeCountry(browser, country, url);
+      data = await scrapeCountry(country, url);
 
       if (data === "error") {
         console.log(`Retrying ${country}...`);

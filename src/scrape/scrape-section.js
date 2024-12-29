@@ -3,11 +3,11 @@ import codes from "../../data/codes.js";
 import countries from "../../data/countries.js";
 import scrapeWithRetry from "./scrape-with-retry.js";
 
-export default async function scrapeSection(browser, start, end) {
+export default async function scrapeSection(start, end) {
   console.log();
   console.log(`Scraping ${countries[start]}-${countries[end - 1]}...`);
 
-  const limit = pLimit(2); // Limit to 2 concurrent requests.
+  const limit = pLimit(5); // Limit to 5 concurrent requests.
   const promises = [];
   const failedCountriesThisSection = [];
 
@@ -20,9 +20,7 @@ export default async function scrapeSection(browser, start, end) {
       : `https://www.spotify.com/${code}/premium/`;
 
     promises.push(
-      limit(() =>
-        scrapeWithRetry(browser, country, url, failedCountriesThisSection)
-      )
+      limit(() => scrapeWithRetry(country, url, failedCountriesThisSection))
     );
   }
 

@@ -11,9 +11,9 @@
   "description": "",
   "type": "module",
   "dependencies": {
+    "axios": "^1.7.9",
     "cheerio": "^1.0.0",
     "he": "^1.2.0",
-    "p-limit": "^6.2.0",
-    "puppeteer": "^23.9.0"
+    "p-limit": "^6.2.0"
   }
 }
