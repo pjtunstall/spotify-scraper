@@ -7,33 +7,30 @@ export default async function scrapeSection(start, end) {
   console.log();
   console.log(`Scraping ${countries[start]}-${countries[end - 1]}...`);
 
-  const limit = pLimit(5); // Limit to 5 concurrent requests.
+  const limit = pLimit(4); // Limit to 4 concurrent requests.
   const promises = [];
-  const failedCountriesThisSection = [];
+  const failedCountriesInThisSection = [];
+  const countriesInThisSection = countries.slice(start, end);
 
-  for (let i = start; i < end; i++) {
+  countriesInThisSection.forEach((country, i) => {
     const code = codes[i];
-    const country = countries[i];
 
     let url = isEnglishVersion(country)
       ? `https://www.spotify.com/${code}-en/premium/`
       : `https://www.spotify.com/${code}/premium/`;
 
     promises.push(
-      limit(() => scrapeWithRetry(country, url, failedCountriesThisSection))
+      limit(() => scrapeWithRetry(country, url, failedCountriesInThisSection))
     );
-  }
+  });
 
   try {
     const resultsArray = await Promise.allSettled(promises);
 
     let results = "";
-    resultsArray.forEach(({ status, value, reason }) => {
+    resultsArray.forEach(({ status, value, reason }, i) => {
       if (status === "fulfilled" && value.data) {
         results += value.data + "\n";
-      }
-      if (status === "rejected") {
-        console.error(`Error processing: ${reason.message}`);
       }
     });
 
@@ -41,17 +38,18 @@ export default async function scrapeSection(start, end) {
       `Completed scraping ${countries[start]}-${countries[end - 1]}.`
     );
 
-    if (failedCountriesThisSection.length > 0) {
+    if (failedCountriesInThisSection.length > 0) {
       console.log(
-        "These countries failed after all retries and won't be retried:"
+        "For this section, the following countries failed and won't be tried again:"
       );
-      console.log(failedCountriesThisSection.join(", "));
+      console.log(failedCountriesInThisSection.join(", "));
     }
 
-    return { results, failedCountriesThisSection };
+    return { results, failedCountriesInThisSection };
   } catch (error) {
     console.error(`Scraping failed unexpectedly: ${error.message}`);
-    return { results: null, failedCountriesThisSection };
+    console.error(error.stack);
+    return { results: null, failedCountriesInThisSection };
   }
 }
 

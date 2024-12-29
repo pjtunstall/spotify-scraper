@@ -21,15 +21,17 @@ export default async function scrapeCountry(country, url) {
       return null;
     }
   } catch (error) {
-    console.error(`${error.message} while scraping ${url} (${country}).`);
-    if (error.response) {
+    if (error.response && error.response.status === 429) {
       console.error(
-        `Failed to load page for ${country}. HTTP status: ${error.response.status}`
+        `${error.message} (too many requests) while scraping ${url} (${country}).`
       );
     } else if (error.request) {
-      console.error(`No response received for ${url}.`);
+      console.error(`No response received for ${url} (${country}).`);
     } else {
-      console.error(`Unexpected error: ${error.message}`);
+      console.error(
+        `Unexpected error: ${error.message} while scraping ${url} (${country}).`
+      );
+      console.error(error.stack);
     }
     return "error";
   }

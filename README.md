@@ -81,13 +81,15 @@ spotify-scraper/
 
 ### Tests
 
-Write tests, including some basic reality checks, especially before making any modifications.
+Write tests, including some basic reality checks, especially before making any modifications: unit tests, an integration test that diffs the resulting file against against some reference data, ...
 
 ### Error handling
 
 Switch to TypeScript to spot bugs sooner.
 
 Make error handling more thorough and more consistent: maybe use try/catch throughout instead of sometimes returning the string "error". Maybe log `error.stack` to print a stack trace by default for all errors except known, acceptable sorts of error, such as a HTTP response of 429 (too many requests). Consider whether to print errors in place and/or on being caught. Perhaps write a panic function to exit with a stack trace unless there's a good reason not to. Add asserts.
+
+Handle file-system errors, especially errors associated with writing the results.
 
 A log file could be saved with a more detailed error report, showing whether the data for each country was obtained, if not, whether that was because the page was not found or the price or currency couldn't be parsed.
 
@@ -105,11 +107,17 @@ Store them in one object to make it easier to catch discrepancies.
 
 #### Tinker with concurrency parameters
 
-The variable `pLimit` in the function `scrapeSection` (in `src/scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. A response of HTTP 429 (too-many requests) indicates that we're being rate-limited. As `pLimit` is raised, such errors proliferate.
+The variable `pLimit` in the function `scrapeSection` (in `src/scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. A HTTP status code of 429 (too-many requests) indicates that we're being rate-limited. As `pLimit` is raised, such errors proliferate.
 
-The number of retries per country is determined by the variable `retries` in the function `scrapeWithRetry` (in `src/scrape/scrape-with-retry.js`). This can be adjusted together with `pLimit`.
+The number of attempts per country is determined by the variable `tries` in the function `scrapeWithRetry` (in `src/scrape/scrape-with-retry.js`). This can be adjusted together with `pLimit`.
 
-They're currently set to `pLimit = 5` and `retries = 5`.
+They're currently set to `pLimit = 4` and `tries = 9`.
+
+You can also adjust the pause delay between retries in `scrapeWithRetry`. It's currently set to `const delay = Math.min(1000 * i, 4000);`, which means try again after 1s, then 2s, ... , up to a maximum of 4s for all remaining attempts.
+
+These parameters generally result in a handful of 429s per 25-country section. Increasing `plimit` to 9, for example, is perfectly viable, and makes the whole process satisfyingly faster, but results in significantly more 429s.
+
+So as not to cause further disruption, I'll leave these experiments for now. In the future, I could investigate test servers, public APIs, and sandboxed environments designed for learning purposes. Wikipedia has been suggested as a scraper-friendly website that encourages experimentation, with clear rate-limiting guidelines.
 
 #### Rewrite in a compiled language
 
