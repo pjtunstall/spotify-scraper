@@ -37,7 +37,7 @@ Now navigate into the `spotify-scraper` folder with `cd spotify-scraper`, instal
 
 At the moment, it saves the data in blocks of 25 countries. The resulting file is called `spotify-prices.csv` and can be found in this folder (`spotify-scraper`), the root directory of the project. (An previously-made example is provided as `spotify-prices-example.csv` to illustrate the format without being overwritten.)
 
-If anything goes wrong (such as extreme delays), you can run the program again and choose which block of countries to start from when prompted. To stop the program, press Ctrl+C. Try Ctrl+C a few times if it's not responding.
+If anything goes wrong while scraping a block, you can run the program again and choose which block of countries to start from when prompted. (In earlier versions, it would sometimes stall, but this hasn't been an issue since switching dependencies from Puppeteer to the lighter-weight Axios.) To stop the program, press Ctrl+C. Try Ctrl+C a few times if it's not responding.
 
 If you want to start afresh, delete or remove any existing `spotify-prices.cvs` file before running the script.
 
