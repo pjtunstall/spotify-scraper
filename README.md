@@ -113,7 +113,7 @@ They're currently set to `pLimit = 4` and `tries = 9`.
 
 You can also adjust the pause delay between retries in `scrapeWithRetry`. It's currently set to `const delay = Math.min(1000 * i, 4000);`, which means try again after 1s, then 2s, ... , up to a maximum of 4s for all remaining attempts.
 
-These parameters generally result in a handful of 429s per 25-country section. Increasing `plimit` to 9, for example, is perfectly viable, and makes the whole process satisfyingly faster, but results in significantly more 429s.
+These parameters generally result in a handful of 429s per 25-country section. Increasing `pLimit` to 9, for example, is perfectly viable, and makes the whole process satisfyingly faster, but results in significantly more 429s.
 
 So as not to cause further disruption, I'll leave these experiments for now. In the future, I could investigate test servers, public APIs, and sandboxed environments designed for learning purposes. Wikipedia has been suggested as a scraper-friendly website that encourages experimentation, with clear rate-limiting guidelines.
 
