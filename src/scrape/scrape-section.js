@@ -7,7 +7,7 @@ export default async function scrapeSection(start, end) {
   console.log();
   console.log(`Scraping ${countries[start]}-${countries[end - 1]}...`);
 
-  const limit = pLimit(4); // Limit to 4 concurrent requests.
+  const limit = pLimit(2); // Limit to 2 concurrent requests.
   const promises = [];
   const failedCountriesInThisSection = [];
   const countriesInThisSection = countries.slice(start, end);

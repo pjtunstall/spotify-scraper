@@ -21,10 +21,33 @@ export default async function scrapeCountry(country, url) {
       return null;
     }
   } catch (error) {
-    if (error.response && error.response.status === 429) {
-      throw new Error(
-        `${error.message} (too many requests) while scraping ${url} (${country}).`
-      );
+    if (error.response) {
+      const status = error.response.status;
+      if (status === 429) {
+        throw new Error(
+          `${error.message} (too many requests) while scraping ${url} (${country}).`
+        );
+      } else if (status === 404) {
+        throw new Error(
+          `${error.message} (resource not found) while scraping ${url} (${country}).`
+        );
+      } else if (status === 500) {
+        throw new Error(
+          `${error.message} (server error) while scraping ${url} (${country}).`
+        );
+      } else if (status === 502) {
+        throw new Error(
+          `${error.message} (bad gateway) while scraping ${url} (${country}).`
+        );
+      } else if (status === 503) {
+        throw new Error(
+          `${error.message} (service unavailable) while scraping ${url} (${country}).`
+        );
+      } else if (status === 401 || status === 403) {
+        throw new Error(
+          `${error.message} (unauthorized/forbidden access) while scraping ${url} (${country}).`
+        );
+      }
     } else if (error.request) {
       throw new Error(`No response received for ${url} (${country})`);
     } else {
