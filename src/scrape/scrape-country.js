@@ -6,7 +6,7 @@ import formatCommaOrDot from "./format-comma-or-dot.js";
 
 export default async function scrapeCountry(country, url) {
   try {
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(url, { timeout: 5000 });
     const $ = cheerio.load(data);
 
     const text = $("#plan-premium-individual .sc-71cce616-6").text().trim();
@@ -22,17 +22,17 @@ export default async function scrapeCountry(country, url) {
     }
   } catch (error) {
     if (error.response && error.response.status === 429) {
-      console.error(
+      throw new Error(
         `${error.message} (too many requests) while scraping ${url} (${country}).`
       );
     } else if (error.request) {
-      console.error(`No response received for ${url} (${country}).`);
+      throw new Error(`No response received for ${url} (${country})`);
     } else {
       console.error(
-        `Unexpected error: ${error.message} while scraping ${url} (${country}).`
+        `Unexpected error: ${error.message} while scraping ${url} (${country})`
       );
       console.error(error.stack);
+      process.exit(1); // Panic!
     }
-    return "error";
   }
 }

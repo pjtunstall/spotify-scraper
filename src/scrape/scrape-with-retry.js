@@ -8,20 +8,15 @@ export default async function scrapeWithRetry(country, url, failedCountries) {
   for (let i = 1; i <= tries; i++) {
     try {
       data = await scrapeCountry(country, url);
-      if (data === "error") {
-        const suffix = i === 1 ? "st" : i === 2 ? "nd" : i === 3 ? "rd" : "th";
-        console.log(`Retrying ${country}... (${i}${suffix} attempt)`);
-        const delay = Math.min(1000 * i, 4000);
-        await pause(delay);
-        continue;
-      } else {
-        console.log(`${country} scraped successfully: ${data}`);
-        return { data, failedCountries };
-      }
+      console.log(`${country} scraped successfully: ${data}`);
+      return { data, failedCountries };
     } catch (error) {
-      console.error(`Error scraping ${country}: ${error.message}`);
-      console.error(error.stack);
-      break;
+      console.error(error.message);
+      const suffix = i === 1 ? "st" : i === 2 ? "nd" : i === 3 ? "rd" : "th";
+      console.log(`Retrying ${country}... (${i}${suffix} attempt)`);
+      const delay = Math.min(1000 * i, 4000);
+      await pause(delay);
+      continue;
     }
   }
 

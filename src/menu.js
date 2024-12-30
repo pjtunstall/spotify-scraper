@@ -3,7 +3,7 @@ import scrape from "./scrape/scrape.js";
 
 export function menu(rl) {
   console.log("Which country do you want to start from?");
-  console.log(`0. ${countries[0]}-${countries[24]}
+  console.log(`  0. ${countries[0]}-${countries[24]}
   1. ${countries[25]}-${countries[49]}
   2. ${countries[50]}-${countries[74]}
   3. ${countries[75]}-${countries[99]}

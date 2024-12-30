@@ -87,8 +87,6 @@ Write tests, including some basic reality checks, especially before making any m
 
 Switch to TypeScript to spot bugs sooner.
 
-Make error handling more thorough and more consistent: maybe use try/catch throughout instead of sometimes returning the string "error". Maybe log `error.stack` to print a stack trace by default for all errors except known, acceptable sorts of error, such as a HTTP response of 429 (too many requests). Consider whether to print errors in place and/or on being caught. Perhaps write a panic function to exit with a stack trace unless there's a good reason not to. Add asserts.
-
 Handle file-system errors, especially errors associated with writing the results.
 
 A log file could be saved with a more detailed error report, showing whether the data for each country was obtained, if not, whether that was because the page was not found or the price or currency couldn't be parsed.
