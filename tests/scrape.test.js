@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import jest from "jest";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -8,12 +7,13 @@ import scrape from "../src/scrape/scrape.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Integration test.
 describe("scrape function", () => {
   const filePath = path.join(__dirname, "../spotify-prices.csv");
   let originalLog, originalWarn, originalError;
 
   beforeAll(async () => {
-    // Remove file at `filePath` if it exists and suppress error if it doesn't.
+    // Before testing, remove file at `filePath` if it exists and suppress error if it doesn't.
     try {
       await fs.unlink(filePath);
     } catch (error) {
@@ -31,7 +31,7 @@ describe("scrape function", () => {
   });
 
   afterAll(async () => {
-    // Again remove file at `filePath` if it exists and suppress error if it doesn't.
+    // When testing is finished, remove file at `filePath` if it exists and suppress error if it doesn't.
     try {
       await fs.unlink(filePath);
     } catch (error) {
