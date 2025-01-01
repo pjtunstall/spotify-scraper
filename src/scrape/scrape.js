@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-import fs from "fs";
+import fs from "fs/promises"; // Changed to promises version
 import path from "path";
 
 import codes from "../../data/codes.js";
@@ -20,6 +20,10 @@ export default async function scrape(option) {
     [200, codes.length],
   ];
 
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const filePath = path.resolve(__dirname, "../../spotify-prices.csv");
+
   for (let i = option; i < sections.length; i++) {
     const [start, end] = sections[i];
 
@@ -32,10 +36,7 @@ export default async function scrape(option) {
       break;
     }
 
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const filePath = path.resolve(__dirname, "../../spotify-prices.csv"); // Relative to this file.
-    fs.appendFileSync(filePath, results);
+    await fs.appendFile(filePath, results);
     console.log(`Saved results for ${countries[start]}-${countries[end - 1]}.`);
     if (failedCountriesInThisSection.length === 0) {
       console.log("All these countries successfully scraped.");
@@ -50,4 +51,6 @@ export default async function scrape(option) {
     console.log("\nList finished: Altogether, the following countries failed:");
     console.log(failedCountries.join(", "));
   }
+
+  return { failedCountries };
 }

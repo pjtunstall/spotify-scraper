@@ -81,7 +81,7 @@ spotify-scraper/
 
 ### Tests
 
-Write tests, including some basic reality checks, especially before making any modifications: unit tests, an integration test that diffs the resulting file against against some reference data, ...
+Add more tests, including some basic reality checks, especially before making any modifications: unit tests. Fix the integration test that should diff the resulting file against against reference data; at the moment it's disabled because it seems not to be waiting for the operation to finish, but instead tries to test after each country is scraped.
 
 ### Error handling
 
