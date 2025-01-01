@@ -13,14 +13,16 @@ export default async function scrapeSection(start, end) {
   const countriesInThisSection = countries.slice(start, end);
 
   countriesInThisSection.forEach((country, i) => {
-    const code = codes[i];
+    const code = codes[start + i];
 
     let url = isEnglishVersion(country)
       ? `https://www.spotify.com/${code}-en/premium/`
       : `https://www.spotify.com/${code}/premium/`;
 
     promises.push(
-      limit(() => scrapeWithRetry(country, url, failedCountriesInThisSection))
+      limit(() =>
+        scrapeWithRetry(country, code, url, failedCountriesInThisSection)
+      )
     );
   });
 

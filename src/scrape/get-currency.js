@@ -32,6 +32,8 @@ export default function getCurrency(country, text) {
       return "BRL";
     case "Bulgaria":
       return "BGN";
+    case "Burundi":
+      return "BIF";
     case "Canada":
       return "CAD";
     case "Chile":

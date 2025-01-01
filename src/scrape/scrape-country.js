@@ -4,9 +4,22 @@ import * as cheerio from "cheerio";
 import getCurrency from "./get-currency.js";
 import formatCommaOrDot from "./format-comma-or-dot.js";
 
-export default async function scrapeCountry(country, url) {
+export default async function scrapeCountry(country, code, url) {
   try {
-    const { data } = await axios.get(url, { timeout: 5000 });
+    const response = await axios.get(url, { timeout: 5000 });
+    const finalUrl = response.request.res.responseUrl;
+    if (finalUrl !== url) {
+      const regex = new RegExp(`\/${code}\/`);
+      const match = finalUrl.match(regex);
+      if (match) {
+        console.warn(
+          `No page for ${country} (${code}): Redirected from ${url} to ${finalUrl}`
+        );
+        return null;
+      }
+    }
+
+    const data = response.data;
     const $ = cheerio.load(data);
 
     const text = $("#plan-premium-individual .sc-71cce616-6").text().trim();
