@@ -11,6 +11,7 @@
 - [Possible further developments](#possible-further-developments)
   - [Tests](#tests)
   - [Error handling](#error-handling)
+  - [Reduce dependencies](#reduce-dependencies)
   - [Countries](#countries)
     - [Trim list of countries](#trim-list-of-countries)
     - [Store country names and codes together](#store-country-names-and-codes-together)
@@ -81,7 +82,9 @@ spotify-scraper/
 
 ### Tests
 
-Add more tests, including some basic reality checks, especially before making any modifications: unit tests. Fix the integration test that should diff the resulting file against against reference data; at the moment it's disabled because it seems not to be waiting for the operation to finish, but instead tries to test after each country is scraped.
+Add more tests, including some basic reality checks, especially before making any modifications: unit tests. This could mean splitting up some functions so that individual actions, such as parsing, can be isolated for testing.
+
+Fix the integration test that should diff the resulting file against against reference data; at the moment it's disabled because it seems not to be waiting for the operation to finish, but instead tries to test after each country is scraped.
 
 ### Error handling
 
@@ -92,6 +95,10 @@ Handle file-system errors, especially errors associated with writing the results
 A log file could be saved with a more detailed error report, showing whether the data for each country was obtained, if not, whether that was because the page was not found or the price or currency couldn't be parsed.
 
 Note that, although I do defensively check for various HTTP status codes indicating an error, Spotify doesn't actually return a 404 when no page for a particular country exists. Instead, it redirects to a page with a URL that includes some other country's code, along with the desired code. In that case, the searched-for code is always on its own between a pair of forward slashes. This is how I'm identifying when no page for the country was found. Other redirects, ones that lead to actual price data, include the desired country code and a two-letter code code indicating the language, separated by a dash, all between two forward slashes. In fact, the only HTTP error code I've seen so far is 429 (too many requests). See `scrape-country.js`.
+
+### Reduce dependencies
+
+Replace `p-limit` with a custom async request queue, carefully respecting the subtlties of timing mentioned in their comments.
 
 ### Countries
 
