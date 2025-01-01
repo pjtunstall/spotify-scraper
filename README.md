@@ -91,6 +91,8 @@ Handle file-system errors, especially errors associated with writing the results
 
 A log file could be saved with a more detailed error report, showing whether the data for each country was obtained, if not, whether that was because the page was not found or the price or currency couldn't be parsed.
 
+Note that, although I do defensively check for various HTTP status codes indicating an error, Spotify doesn't actually return a 404 when no page for a particular country exists. Instead, it redirects to a page with a URL that includes some other country's code, along with the desired code. In that case, the searched-for code is always on its own between a pair of forward slashes. This is how I'm identifying when no page for the country was found. Other redirects, ones that lead to actual price data, include the desired country code and a two-letter code code indicating the language, separated by a dash, all between two forward slashes. In fact, the only HTTP error code I've seen so far is 429 (too many requests). See `scrape-country.js`.
+
 ### Countries
 
 #### Trim list of countries
@@ -105,7 +107,7 @@ Store them in one object to make it easier to catch discrepancies.
 
 #### Tinker with concurrency parameters
 
-The variable `pLimit` in the function `scrapeSection` (in `src/scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. A HTTP status code of 429 (too-many requests) indicates that we're being rate-limited. As `pLimit` is raised, such errors proliferate.
+The variable `pLimit` in the function `scrapeSection` (in `src/scrape/scrape-section.js`) determines the number of concurrent (simultaneous) requests being made to the website. A HTTP status code of 429 (too-many requests) indicates that we're being rate-limited. As `pLimit` is increased, such errors proliferate.
 
 The number of attempts per country is determined by the variable `tries` in the function `scrapeWithRetry` (in `src/scrape/scrape-with-retry.js`). This can be adjusted together with `pLimit`.
 
