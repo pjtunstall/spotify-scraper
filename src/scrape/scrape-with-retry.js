@@ -24,7 +24,7 @@ export default async function scrapeWithRetry(
     } catch (error) {
       console.error(error.message);
       if (!error.message.includes("429")) {
-        break; // Don't try again unless failure is due to rate-limiting.
+        break; // Don't try again unless failure was due to rate-limiting.
       }
     }
   }

@@ -126,7 +126,7 @@ export default function getCurrency(country, text) {
       return "VND";
 
     default:
-      if (/US\$|\$US/.test(text)) {
+      if (/US\$|\$US|USD/.test(text)) {
         return "USD";
       } else if (/€/.test(text)) {
         return "EUR";

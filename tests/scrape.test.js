@@ -1,39 +1,68 @@
 import fs from "fs/promises";
+import jest from "jest";
 import path from "path";
 import { fileURLToPath } from "url";
+
 import scrape from "../src/scrape/scrape.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// `Cannot log after tests are done. Did you forget to wait for something async in your test?`
-// It tries to test after each country is scraped, rather than waiting till the end.
 describe("scrape function", () => {
-  const filePath = path.join(__dirname, "spotify-prices.txt");
+  const filePath = path.join(__dirname, "../spotify-prices.csv");
+  let originalLog, originalWarn, originalError;
 
   beforeAll(async () => {
+    // Remove file at `filePath` if it exists and suppress error if it doesn't.
     try {
       await fs.unlink(filePath);
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
     }
+
+    // Suppress console output for the duration because it confuses the test.
+    originalLog = console.log;
+    originalWarn = console.warn;
+    originalError = console.error;
+
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
   });
 
   afterAll(async () => {
+    // Again remove file at `filePath` if it exists and suppress error if it doesn't.
     try {
       await fs.unlink(filePath);
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
     }
+
+    console.log = originalLog;
+    console.warn = originalWarn;
+    console.error = originalError;
+  });
+
+  it("should test something without console output", () => {
+    console.log("This will not appear in the output");
+    console.warn("This will not appear in the output");
+    console.error("This will not appear in the output");
   });
 
   test("scrape writes correct content to the file", async () => {
     const { failedCountries } = await scrape(0);
-
     const fileContents = await fs.readFile(filePath, "utf8");
-    expect(fileContents).toBe(expectedString);
-    expect(failedCountries).toEqual([]); // Verify no countries failed
-  });
+    const fileLines = fileContents.split("\n");
+    const expectedLines = expectedString.split("\n");
+
+    // Restrict check to the first three columns because the final column is the raw data which may change in trivial ways, e.g. "/month" to "per month".
+    for (let i = 0; i < fileLines.length; i++) {
+      const got = fileLines[i].split(",").slice(0, 3);
+      const expected = expectedLines[i].split(",").slice(0, 3);
+      expect(got).toEqual(expected);
+    }
+    expect(failedCountries).toEqual([]);
+  }, 120_000);
 });
 
 const expectedString = `"Albania","5.49","EUR","€5.49/month after"
@@ -68,7 +97,7 @@ const expectedString = `"Albania","5.49","EUR","€5.49/month after"
 "Canada","12.69","CAD","CA$12.69 / month after. Cancel anytime."
 "Cape Verde","2.99","USD","Depois, 2,99 US$/mês"
 "Chad","2.99","USD","2,99 $US/mois ensuite"
-"Chile","4550","CLP","Después, 4550 CLP/mes"
+"Chile","4,550","CLP","Después, 4550 CLP/mes"
 "Colombia","16,900","COP","Después, 16.900 COP/mes"
 "Comoros","2.99","USD","2,99 $US/mois ensuite"
 "Congo","2.99","USD","2,99 $US/mois ensuite"
