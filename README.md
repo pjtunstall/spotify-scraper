@@ -15,6 +15,8 @@
   - [Countries](#countries)
     - [Trim list of countries](#trim-list-of-countries)
     - [Store country names and codes together](#store-country-names-and-codes-together)
+  - [Tidy CLI](#tidy-cli)
+  - [Tidy writes](#tidy-writes)
   - [Performance](#performance)
     - [Tinker with concurrency parameters](#tinker-with-concurrency-parameters)
     - [Rewrite in a compiled language](#rewrite-in-a-compiled-language)
@@ -38,7 +40,7 @@ Now navigate into the `spotify-scraper` folder with `cd spotify-scraper`, instal
 
 At the moment, it saves the data in blocks of 25 countries. The resulting file is called `spotify-prices.csv` and can be found in this folder (`spotify-scraper`), the root directory of the project. (An previously-made example is provided as `spotify-prices-example.csv` to illustrate the format without being overwritten.)
 
-If anything goes wrong while scraping a block, you can run the program again and choose which block of countries to start from when prompted. (In earlier versions, it would sometimes stall, but this hasn't been an issue since switching dependencies from Puppeteer to the lighter-weight Axios.) To stop the program, press Ctrl+C. Try Ctrl+C a few times if it's not responding.
+If anything goes wrong while scraping a block, you can run the program again and choose which block of countries to start from when prompted. (In earlier versions, it would sometimes stall, but this hasn't been an issue since switching dependencies from Puppeteer to the lighter-weight Axios.) To stop the program, press Ctrl+C. Try Ctrl+C a few times if it doesn't respond at first.
 
 If you want to start afresh, delete or remove any existing `spotify-prices.cvs` file before running the script.
 
@@ -98,7 +100,7 @@ Note that, although I do defensively check for various HTTP status codes indicat
 
 ### Reduce dependencies
 
-Replace `p-limit` with a custom async request queue, carefully respecting the subtlties of timing mentioned in their comments.
+Replace `p-limit` with a custom queue of Promise-returning functions, carefully respecting the subtlties of timing mentioned in their comments.
 
 ### Countries
 
@@ -109,6 +111,14 @@ If some countries are never needed, they could be removed from the list to speed
 #### Store country names and codes together
 
 Store them in one object to make it easier to catch discrepancies.
+
+### Tidy CLI
+
+We could probably dispense with the menu of options for where to restart scraping. This is a holdover from early versions when I was using Puppeteer and the scraping process was lengthy prone to crashes.
+
+### Tidy writes
+
+If dispensing with the menu, the scraping could be done all in one go. There could be an option to rewrite any pre-existing `spotify-prices.csv`, first writing to a temprary file, then renaming it after confirmation that it worked.
 
 ### Performance
 
@@ -128,11 +138,11 @@ So as not to cause further disruption, I'll leave these experiments for now. In 
 
 The program could be rewritten in Go or Rust, for the better performance, type-safety, thread-safety, error handling, and for the convenience of being able to share it by just sharing an executable file.
 
-That said, the main limiting factor may be the network and how many requests Spotify's own server is able and willing to process per unit of time.
+That said, the main limiting factor seems to be how many requests Spotify's own server is able and willing to process per unit of time.
 
 #### Benchmark
 
-Benchmark before and after any performance-related experiment.
+Benchmark before and after any performance-related experiment. (Less relevant now I've realized that, as mentioned in the previous section, the main speed bump comes from Spotify's own rate-limiting.)
 
 ### Extend to other streaming services
 
