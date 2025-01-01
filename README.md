@@ -96,7 +96,23 @@ Handle file-system errors, especially errors associated with writing the results
 
 A log file could be saved with a more detailed error report, showing whether the data for each country was obtained, if not, whether that was because the page was not found or the price or currency couldn't be parsed.
 
-Note that, although I do defensively check for various HTTP status codes indicating an error, Spotify doesn't actually return a 404 when no page for a particular country exists. Instead, it redirects to a page with a URL that includes some other country's code, along with the desired code. In that case, the searched-for code is always on its own between a pair of forward slashes. This is how I'm identifying when no page for the country was found. Other redirects, ones that lead to actual price data, include the desired country code and a two-letter code code indicating the language, separated by a dash, all between two forward slashes. In fact, the only HTTP error code I've seen so far is 429 (too many requests). See `scrape-country.js`.
+Note that, although I do defensively check for various HTTP status codes indicating an error, Spotify doesn't actually return a 404 HTTP response when no page for a particular country exists. Instead, it redirects to a placeholder page with a URL that includes some default or previously-tried country's code, along with the searched-for code. Thus, here is the URL that results when we're redirected from the non-existent Cayman Island's page to a placeholder in Azerbaijani:
+
+```
+https://www.spotify.com/az-az/ky/premium/
+```
+
+Compare this format to the URL that results when we're redirected from `https://www.spotify.com/az/premium/` to the to the useful page with Azerbaijan's price data in Azerbaijani:
+
+```
+https://www.spotify.com/az-az/premium/
+```
+
+The `az-az` is to distinguish it from `az-en` in `https://www.spotify.com/az-en/premium/` (the English-language page for Azerbaijan).
+
+As these examples illustrate, redirect target pages that contain actual price data include the searched-for country code, followed by a dash, then a two-letter code code indicating the language, all between a pair of forward slashes. Placeholder pages, by contrast, put the searched-for code on its own between forward slashes. This is how I'm identifying when no page for the country was found.
+
+In fact, the only HTTP error code I've seen so far is 429 (too many requests). See `scrape-country.js`.
 
 ### Reduce dependencies
 

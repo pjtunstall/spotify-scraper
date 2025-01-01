@@ -59,7 +59,7 @@ export default async function scrapeCountry(country, code, url) {
         `Unexpected error: ${error.message} while scraping ${url} (${country})`
       );
       console.error(error.stack);
-      process.exit(1); // Panic!
+      process.exit(1);
     }
   }
 }

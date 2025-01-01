@@ -30,7 +30,7 @@ export default async function scrapeSection(start, end) {
     const resultsArray = await Promise.allSettled(promises);
 
     let results = "";
-    resultsArray.forEach(({ status, value, reason }, i) => {
+    resultsArray.forEach(({ status, value, reason_ }, i_) => {
       if (status === "fulfilled" && value.data) {
         results += value.data + "\n";
       }

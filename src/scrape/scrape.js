@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-import fs from "fs/promises"; // Changed to promises version
+import fs from "fs/promises";
 import path from "path";
 
 import codes from "../../data/codes.js";
@@ -52,5 +52,5 @@ export default async function scrape(option) {
     console.log(failedCountries.join(", "));
   }
 
-  return { failedCountries };
+  return { failedCountries }; // Return value for testing.
 }
