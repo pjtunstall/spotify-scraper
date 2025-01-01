@@ -12,6 +12,12 @@ export default async function scrapeWithRetry(
 
   for (let i = 1; i <= tries; i++) {
     try {
+      if (i > 1) {
+        const suffix = i === 1 ? "st" : i === 2 ? "nd" : i === 3 ? "rd" : "th";
+        console.log(`Retrying ${country}... (${i}${suffix} attempt)`);
+        const delay = Math.min(1000 * i, 4000);
+        await pause(delay);
+      }
       data = await scrapeCountry(country, code, url);
       console.log(`${country} (${code}) scraped successfully: ${data}`);
       return { data, failedCountriesInThisSection };
@@ -20,11 +26,6 @@ export default async function scrapeWithRetry(
       if (!error.message.includes("429")) {
         break; // Don't try again unless failure is due to rate-limiting.
       }
-      const suffix = i === 1 ? "st" : i === 2 ? "nd" : i === 3 ? "rd" : "th";
-      console.log(`Retrying ${country}... (${i}${suffix} attempt)`);
-      const delay = Math.min(1000 * i, 4000);
-      await pause(delay);
-      continue;
     }
   }
 
