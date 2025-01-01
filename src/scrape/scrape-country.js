@@ -23,16 +23,7 @@ export default async function scrapeCountry(country, code, url) {
     const $ = cheerio.load(data);
 
     const text = $("#plan-premium-individual .sc-71cce616-6").text().trim();
-    const priceNumber = text.match(/(\d+(?:[.,]\d+)*)/);
-    const extractedPrice = priceNumber ? priceNumber[1] : null;
-    const currency = getCurrency(country, text);
-
-    if (extractedPrice) {
-      let normalizedPrice = formatCommaOrDot(extractedPrice);
-      return `"${country}","${normalizedPrice}","${currency}","${text}"`;
-    } else {
-      return null;
-    }
+    return formatPriceData(text, country);
   } catch (error) {
     if (error.response) {
       const status = error.response.status;
@@ -70,5 +61,18 @@ export default async function scrapeCountry(country, code, url) {
       console.error(error.stack);
       process.exit(1); // Panic!
     }
+  }
+}
+
+export function formatPriceData(text, country) {
+  const priceNumber = text.match(/(\d+(?:[.,]\d+)*)/);
+  const extractedPrice = priceNumber ? priceNumber[1] : null;
+  const currency = getCurrency(country, text);
+
+  if (extractedPrice) {
+    let normalizedPrice = formatCommaOrDot(extractedPrice);
+    return `"${country}","${normalizedPrice}","${currency}","${text}"`;
+  } else {
+    return null;
   }
 }
