@@ -122,7 +122,7 @@ export default function getCurrency(country, text) {
       return "AED";
     case "United Kingdom":
       return "GBP";
-    case "Vietnam":
+    case "Viet Nam":
       return "VND";
 
     default:
