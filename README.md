@@ -118,7 +118,7 @@ In fact, the only HTTP error code I've seen so far is 429 (too many requests). S
 
 ### Reduce dependencies
 
-Replace `p-limit` with a custom queue of Promise-returning functions, carefully respecting the subtlties of timing mentioned in their comments.
+Replace `p-limit` with a custom queue of Promise-returning functions, carefully respecting the subtleties of timing mentioned in their comments.
 
 ### Countries
 
