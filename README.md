@@ -44,6 +44,8 @@ If anything goes wrong while scraping a block, you can run the program again and
 
 If you want to start afresh, delete or remove any existing `spotify-prices.cvs` file before running the script.
 
+To run the tests, enter `npm test`.
+
 ## Structure
 
 ### Internal call graph
@@ -86,7 +88,7 @@ spotify-scraper/
 
 Add more tests, including some basic reality checks, especially before making any modifications: unit tests. This could mean splitting up some functions so that individual actions can be isolated for testing.
 
-Currently there are just two unit tests, both of which check formatting functions, and one integration test, which calls `scape(0)` to scrape all countries, then compares the results against reference results, scraped previously.
+Currently there are just two unit tests, both of which check formatting functions, and one integration test, which calls `scrape(0)` to scrape all countries, then compares the results against reference results, scraped previously.
 
 ### Error handling
 
