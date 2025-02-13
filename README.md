@@ -36,7 +36,7 @@ Make sure you have [Node.js](https://nodejs.org/en/download) installed. Then fol
 git clone https://github.com/pjtunstall/spotify-scraper
 ```
 
-Now navigate into the `spotify-scraper` folder with `cd spotify-scraper`, install 3rd-party dependencies with `npm install`, run the program with `node src/main.js`, and follow the prompts.
+Now navigate into the `spotify-scraper` folder with `cd spotify-scraper`, install 3rd-party dependencies with `npm install`, and follow further instructions to fix any vulnerabilities found in the dependencies if possible. Run the program with `node src/main.js`, and follow the prompts.
 
 At the moment, it saves the data in blocks of 25 countries. The resulting file is called `spotify-prices.csv` and can be found in this folder (`spotify-scraper`), the root directory of the project. (An previously-made example is provided as `spotify-prices-example.csv` to illustrate the format without being overwritten.)
 

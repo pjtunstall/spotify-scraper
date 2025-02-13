@@ -22,7 +22,7 @@ export default async function scrapeCountry(country, code, url) {
     const data = response.data;
     const $ = cheerio.load(data);
 
-    const text = $("#plan-premium-individual .sc-71cce616-6").text().trim();
+    const text = $("#plan-premium-individual").text().trim();
     return formatPriceData(text, country);
   } catch (error) {
     if (error.response) {
