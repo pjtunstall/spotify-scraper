@@ -3,6 +3,7 @@
 ## Contents
 
 - [What is it?](#what-is-it?)
+- [Caveat](#caveat)
 - [Usage](#usage)
 - [Structure](#structure)
   - [Internal call graph](#internal-call-graph)
@@ -27,6 +28,10 @@
 ## What is it?
 
 A program for scraping Spotify premium individual plan price data for all countries.
+
+## Caveat
+
+Effective at least as far as early 2025. I'm not actively maintaining it or checking that it still works in case Spotify make changes to their website.
 
 ## Usage
 
